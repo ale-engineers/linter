@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false  # Actions 用のデフォルト認証を使わない
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
