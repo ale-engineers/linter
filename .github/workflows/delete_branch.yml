@@ -3,12 +3,15 @@ name: Delete Branch After Merge
 on:
   pull_request:
     types:
-      - closed  # PRがマージorクローズされたら実行
+      - closed
 
 jobs:
   delete_merged_branch:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository  # ← これを追加！
+        uses: actions/checkout@v3
+
       - name: Delete branch if merged and not protected
         if: |
           github.event.pull_request.merged == true &&
