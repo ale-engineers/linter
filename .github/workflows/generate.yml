@@ -18,7 +18,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.27.3"  # 🔥 Flutter 3.27.3 に変更
+          flutter-version: "3.27.3"
 
       - name: Install dependencies
         run: flutter pub get
@@ -27,14 +27,22 @@ jobs:
         run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Check for changes
+        id: check_changes
         run: |
-          git diff --quiet || echo "Changes detected"
+          if git diff --quiet; then
+            echo "No changes detected."
+            echo "changed=false" >> $GITHUB_ENV
+          else
+            echo "Changes detected."
+            echo "changed=true" >> $GITHUB_ENV
+          fi
 
       - name: Commit and Push changes
-        if: success()
+        if: env.changed == 'true'  # 🔥 変更があるときだけ push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase  # 🔥 最新の変更を取り込む
           git add .
-          git commit -m "chore: Auto-generate freezed & g.dart files" || exit 0
+          git commit -m "chore: Auto-generate freezed & g.dart files"
           git push
