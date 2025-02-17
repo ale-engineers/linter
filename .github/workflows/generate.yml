@@ -1,0 +1,40 @@
+name: Generate Freezed & G Files
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  generate_and_commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 🔥 GitHub Actions に push 権限を付与
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.27.3"  # 🔥 Flutter 3.27.3 に変更
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate files (g.dart, freezed.dart)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Check for changes
+        run: |
+          git diff --quiet || echo "Changes detected"
+
+      - name: Commit and Push changes
+        if: success()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: Auto-generate freezed & g.dart files" || exit 0
+          git push
