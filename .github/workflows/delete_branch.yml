@@ -8,8 +8,10 @@ on:
 jobs:
   delete_merged_branch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 🔥 これを追加！
     steps:
-      - name: Checkout repository  # ← これを追加！
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Delete branch if merged and not protected
