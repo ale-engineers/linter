@@ -14,6 +14,18 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.27.3"
-      - run: flutter pub get
-      - run: dart run build_runner build --delete-conflicting-outputs
-      - run: flutter analyze
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate code (g.dart, freezed.dart)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed --line-length 80 $(find lib -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "firebase_options.dart")
+
+      - name: Run linter
+        run: flutter analyze
+
+      - name: Unit Test
+        run: flutter test test/unit/
