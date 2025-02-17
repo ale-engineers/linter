@@ -15,4 +15,5 @@ jobs:
         with:
           flutter-version: "3.27.3"
       - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
       - run: flutter analyze
