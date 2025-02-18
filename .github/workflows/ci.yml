@@ -1,9 +1,14 @@
 name: CI
 
 on:
+  push:
+    branches:
+      - main
+      - develop
   pull_request:
     branches:
       - main
+      - develop
 
 jobs:
   flutter_analyze:
@@ -15,17 +20,20 @@ jobs:
         with:
           flutter-version: "3.27.3"
 
-      - name: Install dependencies
+      - name: 依存関係をインストール
         run: flutter pub get
 
-      - name: Generate code (g.dart, freezed.dart)
+      - name: コード生成 (g.dart, freezed.dart)
         run: dart run build_runner build --delete-conflicting-outputs
 
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed --line-length 80 $(find lib -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "firebase_options.dart")
+      - name: アプリのビルド（Debug）
+        run: flutter build apk --debug
 
-      - name: Run linter
+      - name: ユニットテストの実行
+        run: flutter test
+
+      - name: 静的解析の実行
         run: flutter analyze
 
-      - name: Unit Test
-        run: flutter test test/unit/
+      - name: コードフォーマットの確認
+        run: dart format --output=none --set-exit-if-changed --line-length 80 $(find lib -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "firebase_options.dart")
