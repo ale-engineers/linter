@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:linter/riverpod_test/api_client.dart';
@@ -18,7 +19,6 @@ class MockIncrementAsyncNotifier extends MockIncrementAsyncNotifierInterface {
 void main() {
   late MockApiClient apiClient;
   late ProviderContainer container;
-  int counter = 0;
 
   setUp(() {
     apiClient = MockApiClient();
@@ -30,7 +30,7 @@ void main() {
         /// when を使えるといけるのかもしれないけど
         fetchNumberProvider.overrideWith((ref) async {
           final number = Random().nextInt(100);
-          print('number: $number');
+          debugPrint('number: $number');
           return number;
         }),
         incrementAsyncNotifierProvider.overrideWith(MockIncrementAsyncNotifier.new),

@@ -13,7 +13,7 @@ class Type extends _$Type {
 
   updateType() {
     state = Random().nextInt(100);
-    print('updateType: $state');
+    debugPrint('updateType: $state');
   }
 }
 

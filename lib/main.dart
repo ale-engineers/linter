@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linter/riverpod/skia.dart';
 
 void main() {
-  print('test');
+  debugPrint('test');
   runApp(ProviderScope(child: MyApp()));
 }
 
@@ -16,11 +16,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Builder(builder: (context) {
         return SkiaView();
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('SnackBar Example'),
-          ),
-        );
+        // return Scaffold(
+        //   appBar: AppBar(
+        //     title: Text('SnackBar Example'),
+        //   ),
+        // );
       }),
     );
   }
