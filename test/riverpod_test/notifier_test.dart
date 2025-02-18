@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:linter/riverpod_test/api_client.dart';
@@ -28,22 +25,22 @@ void main() {
         // fetchNumberProvider.overrideWith((ref) async => 24),
         /// todo override しても2回以上回ることはない
         /// when を使えるといけるのかもしれないけど
-        fetchNumberProvider.overrideWith((ref) async {
-          final number = Random().nextInt(100);
-          debugPrint('number: $number');
-          return number;
-        }),
-        incrementAsyncNotifierProvider.overrideWith(MockIncrementAsyncNotifier.new),
+        // fetchNumberProvider.overrideWith((ref) async {
+        //   final number = Random().nextInt(100);
+        //   debugPrint('number: $number');
+        //   return number;
+        // }),
+        // incrementAsyncNotifierProvider.overrideWith(MockIncrementAsyncNotifier.new),
       ],
     );
 
-    // test('Notifier test', () async {
-    //   when(() => apiClient.fetch()).thenAnswer((_) async => 42);
-    //
-    //   final notifier = container.read(notifierProvider.notifier);
-    //   final num = await notifier.apiClient();
-    //   expect(num, 42);
-    // });
+    test('Notifier test', () async {
+      when(() => apiClient.fetch()).thenAnswer((_) async => 42);
+
+      final notifier = container.read(notifierProvider.notifier);
+      final num = await notifier.apiClient();
+      expect(num, 42);
+    });
 
     // test('fetchNumber() returns 42', () async {
     //   final notifier = container.read(notifierProvider.notifier);
