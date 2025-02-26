@@ -9,6 +9,16 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsHtmlGen {
+  const $AssetsHtmlGen();
+
+  /// File path: assets/html/index.html
+  String get index => 'assets/html/index.html';
+
+  /// List of all assets
+  List<String> get values => [index];
+}
+
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
@@ -22,6 +32,7 @@ class $AssetsImagesGen {
 class Assets {
   const Assets._();
 
+  static const $AssetsHtmlGen html = $AssetsHtmlGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
 }
 
