@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:linter/sbt/login/secure_token_model.dart';
+import 'package:linter/sbt/login/auth_api_model.dart';
+import 'package:linter/sbt/login/auth_exception.dart';
 import 'package:linter/utils/result.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -10,7 +11,7 @@ part 'secure_storage.g.dart';
 FlutterSecureStorage flutterSecureStorage(Ref ref) => FlutterSecureStorage();
 
 @riverpod
-SecureStorageAdapter secureStorageAdapterProvider(Ref ref) {
+SecureStorageAdapter secureStorageAdapter(Ref ref) {
   return SecureStorageAdapter(storage: ref.read(flutterSecureStorageProvider));
 }
 
@@ -20,7 +21,7 @@ class SecureStorageAdapter {
 
   final FlutterSecureStorage _storage;
 
-  Future<Result<void>> saveToken(SecureTokenModel tokenModel) async {
+  Future<Result<void>> saveToken(TokenModel tokenModel) async {
     try {
       await _storage.write(
         key: 'access_token',
@@ -34,17 +35,38 @@ class SecureStorageAdapter {
         key: 'refresh_token',
         value: tokenModel.refreshToken,
       );
+      await _storage.write(
+        key: 'sub',
+        value: tokenModel.sub,
+      );
       return Result.ok(null);
-    } on Exception catch (e) {
-      return Result.error(Exception('エラーが発生しました: ${e.toString()}'));
+    } on Exception catch (_) {
+      throw AuthExceptionType.secureStorageError;
     }
   }
 
-  // Future<Result<SecureTokenModel>> getToken() async {
-  //   try {
-  //     final accessToken = await _storage.read(key: 'access_token');
-  //   } catch (e) {
-  //     print('test');
-  //   }
-  // }
+  Future<Result<TokenModel?>> getTokens() async {
+    try {
+      final accessToken = await _storage.read(key: 'access_token');
+      final idToken = await _storage.read(key: 'id_token');
+      final refreshToken = await _storage.read(key: 'refresh_token');
+      final sub = await _storage.read(key: 'sub');
+      if (accessToken == null ||
+          idToken == null ||
+          refreshToken == null ||
+          sub == null) {
+        return Result.ok(null);
+      }
+      return Result.ok(
+        TokenModel(
+          accessToken: accessToken,
+          idToken: idToken,
+          refreshToken: refreshToken,
+          sub: sub,
+        ),
+      );
+    } on Exception catch (_) {
+      throw AuthExceptionType.secureStorageError;
+    }
+  }
 }
